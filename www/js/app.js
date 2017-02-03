@@ -13,7 +13,7 @@ app.run(function ($ionicPlatform) {
 	});
 });
 
-app.controller('SoundBoardCtrl', function ($scope) {
+app.controller('SoundBoardCtrl', function ($scope, $window) {
 
 	$scope.media = null;
 
@@ -65,15 +65,32 @@ app.controller('SoundBoardCtrl', function ($scope) {
 			}
 		]
 	};
+	
+	$scope.deleteSound = function ($index) {
+		$scope.model.sounds.splice($index,1); // remove a sound from list
+	};
+	
+	$scope.moveSound = function (sound,fromIndex,toIndex) {
+		$scope.model.sounds.splice(fromIndex,1); // remove from previous position
+		$scope.model.sounds.splice(toIndex, 0 ,sound); // insert into target position
+	};
 
 	$scope.play = function (sound) {
+		
 		if ($scope.media) {
 			$scope.media.pause();
 		}
-		$scope.media = new Audio();
-		$scope.media.src = sound.file;
-		$scope.media.load();
-		$scope.media.play();
+		
+		if ($window.cordova) { // if running on device
+			 console.log("play called on device");
+		}
+		else { // if running on browser
+			$scope.media = new Audio();
+			$scope.media.src = sound.file;
+			$scope.media.load();
+			$scope.media.play();			
+		}
+
 	};
 });
 
