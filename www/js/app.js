@@ -83,6 +83,18 @@ app.controller('SoundBoardCtrl', function ($scope, $window) {
 		
 		if ($window.cordova) { // if running on device
 			 console.log("play called on device");
+			 ionic.Platform.ready( function () {
+				
+				var src = sound.file;
+				if (ionic.Platform.is ('android')) {
+					console.log("android");
+					src = '/android_asset/www/' + src;
+				}
+				
+				$scope.media = new $window.Media(src);
+				$scope.media.play();
+				
+			 });
 		}
 		else { // if running on browser
 			$scope.media = new Audio();
